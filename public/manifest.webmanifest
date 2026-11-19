@@ -1,0 +1,10 @@
+{
+  "name": "Approvd",
+  "short_name": "Approvd",
+  "description": "Hybrid on-device + cloud spend-policy agent",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f1ea",
+  "theme_color": "#f6f1ea",
+  "icons": []
+}

@@ -1,0 +1,175 @@
+:root {
+  --bg: #f6f1ea;
+  --card: rgba(255, 255, 255, 0.72);
+  --ink: #1c1917;
+  --muted: #78716c;
+  --accent: #c45c7a;
+  --gold: #c9a227;
+  --allow: #15803d;
+  --need: #b45309;
+  --deny: #b91c1c;
+  --border: rgba(28, 25, 23, 0.08);
+  --shadow: 0 10px 40px rgba(28, 25, 23, 0.08);
+  font-family: "Manrope", system-ui, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(1200px 600px at 10% -10%, #fde2e8, transparent),
+    radial-gradient(900px 500px at 100% 0%, #fef3c7, transparent), var(--bg);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { line-height: 1.45; }
+
+h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 550; margin: 0 0 0.4rem; }
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.badge {
+  border: 1px solid var(--border);
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.badge.live { color: var(--accent); border-color: rgba(196, 92, 122, 0.35); }
+
+.nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.nav button {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 0.7rem 0.5rem;
+  cursor: pointer;
+  font: inherit;
+}
+.nav button.active {
+  outline: 2px solid var(--accent);
+  color: var(--accent);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 1rem 1.1rem;
+  backdrop-filter: blur(14px);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 320px;
+  max-height: 52vh;
+  overflow: auto;
+  margin-bottom: 0.75rem;
+}
+.bubble {
+  max-width: 85%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.bubble.user { align-self: flex-end; background: #fff7ed; }
+.bubble.assistant { align-self: flex-start; }
+.bubble.system { align-self: stretch; color: var(--muted); background: transparent; }
+
+.composer {
+  display: flex;
+  gap: 0.5rem;
+}
+.composer input {
+  flex: 1;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 0.8rem 0.9rem;
+  font: inherit;
+  background: #fff;
+}
+.composer button, .btn {
+  border: none;
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(135deg, var(--accent), #9d4b6c);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.btn.ghost {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn.danger { background: var(--deny); }
+
+.verdict {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 8px;
+  margin-right: 0.35rem;
+}
+.verdict.allow { background: #dcfce7; color: var(--allow); }
+.verdict.needs_approval { background: #ffedd5; color: var(--need); }
+.verdict.deny { background: #fee2e2; color: var(--deny); }
+
+.list { display: flex; flex-direction: column; gap: 0.75rem; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.85rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.row .meta { color: var(--muted); font-size: 0.85rem; }
+.actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; color: var(--muted); }
+label input, label textarea {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+
+.hint { color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; }
+
+@media (max-width: 640px) {
+  .nav { grid-template-columns: repeat(2, 1fr); }
+  .bubble { max-width: 95%; }
+}
