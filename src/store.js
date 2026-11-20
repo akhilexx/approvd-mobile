@@ -1,6 +1,6 @@
 import { DEFAULT_POLICY, evaluate } from "./policy.js";
 
-const KEY = "approvd-mobile-v1";
+const KEY = "approvd-mobile-v2";
 
 function load() {
   try {
@@ -16,11 +16,18 @@ function save(state) {
   localStorage.setItem(KEY, JSON.stringify(state));
 }
 
+function actionTitle(call, amount) {
+  if (call.name === "create_payout") return `Payout $${amount} → ${call.args?.receiver ?? "unknown payee"}`;
+  if (call.name === "create_refund") return `Refund $${amount} on ${call.args?.captureId ?? "capture"}`;
+  return `${call.name} $${amount}`;
+}
+
 export function createStore() {
   const seed = load() || {
     policy: { ...DEFAULT_POLICY, payeeAllowlist: [...DEFAULT_POLICY.payeeAllowlist] },
     messages: [
       {
+        id: "sys-0",
         role: "system",
         text: "Approvd is ready. Ask in plain English — policy decides, the model only proposes.",
       },
@@ -28,9 +35,9 @@ export function createStore() {
     approvals: [
       {
         id: "ap-demo-1",
-        title: "Payout $120 → newvendor@mail.test",
-        detail: "New payee + above $50 threshold",
-        call: { name: "create_payout", args: { amount: 120, receiver: "newvendor@mail.test" } },
+        title: "Payout $85 → studio.supplies@mail.test",
+        detail: "payee not on allowlist: studio.supplies@mail.test; 85 is above the 50 auto-approve threshold",
+        call: { name: "create_payout", args: { amount: 85, receiver: "studio.supplies@mail.test" } },
         status: "pending",
         createdAt: Date.now() - 3600_000,
       },
@@ -66,7 +73,7 @@ export function createStore() {
       return () => listeners.delete(fn);
     },
     addMessage(msg) {
-      seed.messages.push({ ...msg, at: Date.now() });
+      seed.messages.push({ id: msg.id || `m-${Date.now()}-${seed.messages.length}`, ...msg, at: Date.now() });
       emit();
     },
     setPolicy(patch) {
@@ -96,7 +103,7 @@ export function createStore() {
       if (decision.verdict === "needs_approval") {
         seed.approvals.unshift({
           id: `ap-${Date.now()}`,
-          title: `${call.name} $${decision.amount}`,
+          title: actionTitle(call, decision.amount),
           detail: decision.reasons.join("; "),
           call,
           status: "pending",
@@ -118,6 +125,7 @@ export function createStore() {
       if (!a || a.status !== "pending") return null;
       if (!approve) {
         a.status = "rejected";
+        a.resolvedAt = Date.now();
         emit();
         return a;
       }
@@ -129,6 +137,7 @@ export function createStore() {
         return a;
       }
       a.status = "approved";
+      a.resolvedAt = Date.now();
       if (a.call.name === "create_payout" || a.call.name === "batch_payout") {
         seed.outflowLast24h = +(seed.outflowLast24h + decision.amount).toFixed(2);
       }
